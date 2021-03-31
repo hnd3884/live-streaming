@@ -1,23 +1,22 @@
 import React from "react";
 import '../styles/home.style.css'
 import io from 'socket.io-client'
+import config from '../config'
 
 class Watch extends React.Component {
      componentDidMount() {
-          let peerConnection;
-          const config = {
-               iceServers: [
-                    {
-                         urls: ["stun:stun.l.google.com:19302"]
-                    }
-               ]
-          };
 
-          // const socket = io('localhost:5000');
-          const socket = io('192.168.1.6:5000');
+          // peer connection to streamer
+          let peerConnection;
+
+          // socket connection
+          const socket = io(`${config.NODE_IP}:${config.NODE_PORT}`);
+
           const video = document.querySelector("video");
 
+          // socket handler
           socket.on("offer", (id, description) => {
+               console.log('offer')
                peerConnection = new RTCPeerConnection(config);
                peerConnection
                     .setRemoteDescription(description)
@@ -26,8 +25,8 @@ class Watch extends React.Component {
                     .then(() => {
                          socket.emit("answer", id, peerConnection.localDescription);
                     });
-               peerConnection.ontrack = function ({ streams: [stream] }) {
-                    video.srcObject = stream;
+               peerConnection.ontrack = event => {
+                    video.srcObject = event.streams[0];
                };
                peerConnection.onicecandidate = event => {
                     if (event.candidate) {
@@ -59,10 +58,7 @@ class Watch extends React.Component {
 
      render() {
           return (
-               <div>
-                    asas
-                    <video playsInline autoPlay></video>
-               </div>
+               <video playsInline autoPlay muted></video>
           )
      }
 }

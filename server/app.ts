@@ -13,7 +13,10 @@ const io = new socketIO.Server(server, {
      }
 })
 
+// locate socket id of streamer
 let broadcaster: string
+
+// socket handler
 io.sockets.on('connect', socket => {
      socket.on('broadcaster', () => {
           broadcaster = socket.id;

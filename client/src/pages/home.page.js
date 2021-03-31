@@ -1,6 +1,7 @@
 import React from "react";
 import io from 'socket.io-client'
 import '../styles/home.style.css'
+import config from '../config'
 
 class Home extends React.Component {
 
@@ -11,44 +12,42 @@ class Home extends React.Component {
 
      // Start streaming
      StartStream = () => {
-          // === socket handler ===
-          const peerConnections = {};
-          const config = {
-               iceServers: [
-                    {
-                         urls: ["stun:stun.l.google.com:19302"]
-                    }
-               ]
-          };
 
-          // const socket = io('localhost:5000');
-          const socket = io('192.168.1.6:5000');
+          // client list
+          const peerConnections = {};
+
+          // socket connection
+          const socket = io(`${config.NODE_IP}:${config.NODE_PORT}`);
+
           const video = document.querySelector("video");
 
-          // Media contrains
-          const constraints = {
-               video: true,
-               audio: true,
-          };
+          // Use camera
+          // navigator.mediaDevices
+          //      .getUserMedia(constraints)
+          //      .then(stream => {
+          //           video.srcObject = stream;
+          //           socket.emit("broadcaster");
+          //      })
+          //      .catch(error => console.error(error));
 
-          // navigator.getUserMedia(constraints, stream => {
-          //      video.srcObject = stream;
-          //      socket.emit("broadcaster");
-          // }, err => console.error(err))
-
-          navigator.mediaDevices.getDisplayMedia(constraints)
+          // Use screen
+          navigator.mediaDevices.getDisplayMedia(config.VIDEO_CONSTRAINS)
                .then(function (mediaStream) {
                     video.srcObject = mediaStream;
                     socket.emit("broadcaster");
                })
                .catch(function (err) { console.log(err.name + ": " + err.message); });
 
+          // Socket handler
           socket.on("watcher", id => {
                const peerConnection = new RTCPeerConnection(config);
                peerConnections[id] = peerConnection;
 
                let stream = video.srcObject;
-               stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+               stream.getTracks().forEach(track => {
+                    console.log(123)
+                    peerConnection.addTrack(track, stream)
+               });
 
                peerConnection.onicecandidate = event => {
                     if (event.candidate) {
