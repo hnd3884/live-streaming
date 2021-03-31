@@ -13,7 +13,8 @@ class Watch extends React.Component {
                ]
           };
 
-          const socket = io('localhost:5000');
+          // const socket = io('localhost:5000');
+          const socket = io('192.168.1.6:5000');
           const video = document.querySelector("video");
 
           socket.on("offer", (id, description) => {
@@ -58,7 +59,10 @@ class Watch extends React.Component {
 
      render() {
           return (
-               <video playsInline autoPlay></video>
+               <div>
+                    asas
+                    <video playsInline autoPlay></video>
+               </div>
           )
      }
 }

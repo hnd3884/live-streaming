@@ -21,7 +21,8 @@ class Home extends React.Component {
                ]
           };
 
-          const socket = io('localhost:5000');
+          // const socket = io('localhost:5000');
+          const socket = io('192.168.1.6:5000');
           const video = document.querySelector("video");
 
           // Media contrains
@@ -30,10 +31,17 @@ class Home extends React.Component {
                audio: true,
           };
 
-          navigator.getUserMedia(constraints, stream => {
-               video.srcObject = stream;
-               socket.emit("broadcaster");
-          }, err => console.error(err))
+          // navigator.getUserMedia(constraints, stream => {
+          //      video.srcObject = stream;
+          //      socket.emit("broadcaster");
+          // }, err => console.error(err))
+
+          navigator.mediaDevices.getDisplayMedia(constraints)
+               .then(function (mediaStream) {
+                    video.srcObject = mediaStream;
+                    socket.emit("broadcaster");
+               })
+               .catch(function (err) { console.log(err.name + ": " + err.message); });
 
           socket.on("watcher", id => {
                const peerConnection = new RTCPeerConnection(config);

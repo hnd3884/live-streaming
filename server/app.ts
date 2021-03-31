@@ -13,7 +13,6 @@ const io = new socketIO.Server(server, {
      }
 })
 
-let i = 0
 let broadcaster: string
 io.sockets.on('connect', socket => {
      socket.on('broadcaster', () => {
