@@ -1,10 +1,17 @@
 import React from "react";
 import '../styles/home.style.css'
 import io from 'socket.io-client'
-import config from '../config'
+import { config } from '../config'
 
 class Watch extends React.Component {
+
+     constructor(props) {
+          super(props)
+          console.log(this.props.id)
+     }
+
      componentDidMount() {
+          let broadcasterId = this.props.id
 
           // peer connection to streamer
           let peerConnection;
@@ -42,7 +49,7 @@ class Watch extends React.Component {
           });
 
           socket.on("connect", () => {
-               socket.emit("watcher");
+               socket.emit("start-watching", broadcasterId);
           });
 
           socket.on("broadcaster", () => {
@@ -58,7 +65,10 @@ class Watch extends React.Component {
 
      render() {
           return (
-               <video playsInline autoPlay muted></video>
+               <div>
+                    asaas
+                    <video playsInline autoPlay muted></video>
+               </div>
           )
      }
 }

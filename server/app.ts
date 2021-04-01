@@ -13,30 +13,36 @@ const io = new socketIO.Server(server, {
      }
 })
 
-// locate socket id of streamer
-let broadcaster: string
+// locate socket ids of broadcasters
+let broadcasterList: string[] = []
 
 // socket handler
 io.sockets.on('connect', socket => {
      socket.on('broadcaster', () => {
-          broadcaster = socket.id;
-          socket.broadcast.emit('broadcaster')
+          broadcasterList.push(socket.id);
+          socket.broadcast.emit('broadcaster', socket.id)
      })
-     socket.on("watcher", () => {
-          socket.to(broadcaster).emit("watcher", socket.id);
+     
+     socket.on("start-watching", (broadcasterId) => {
+          socket.to(broadcasterId).emit("start-watching", socket.id);
      });
-     socket.on("disconnect", () => {
+     socket.on("disconnect", broadcaster => {
           socket.to(broadcaster).emit("disconnectPeer", socket.id);
      });
-     socket.on("offer", (id, message) => {
-          socket.to(id).emit("offer", socket.id, message);
+     socket.on("offer", (clientId, localDescription) => {
+          socket.to(clientId).emit("offer", socket.id, localDescription);
      });
      socket.on("answer", (id, message) => {
           socket.to(id).emit("answer", socket.id, message);
      });
-     socket.on("candidate", (id, message) => {
-          socket.to(id).emit("candidate", socket.id, message);
+     socket.on("candidate", (clientId, message) => {
+          socket.to(clientId).emit("candidate", socket.id, message);
      });
+})
+
+// API route
+app.get('/broadcaster/list', (req, res) => {
+     res.send(broadcasterList).end()
 })
 
 server.listen(5000, () => {

@@ -1,4 +1,4 @@
-export default config = {
+export const config = {
      NODE_IP: 'localhost',
      NODE_PORT: 5000,
      VIDEO_CONSTRAINS: {
