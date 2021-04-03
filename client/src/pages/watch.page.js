@@ -11,9 +11,10 @@ class Watch extends React.Component {
      }
 
      componentDidMount() {
+          // locate broadcaster id
           let broadcasterId = this.props.id
 
-          // peer connection to streamer
+          // peer connection to broadcaster
           let peerConnection;
 
           // socket connection
@@ -56,7 +57,7 @@ class Watch extends React.Component {
                socket.emit("watcher");
           });
 
-          window.onunload = window.onbeforeunload = () => {
+          window.onunload = window.beforeunload = () => {
                socket.close();
                peerConnection.close();
           };
@@ -66,7 +67,6 @@ class Watch extends React.Component {
      render() {
           return (
                <div>
-                    asaas
                     <video playsInline autoPlay muted></video>
                </div>
           )

@@ -15,6 +15,7 @@ const io = new socketIO.Server(server, {
 
 // locate socket ids of broadcasters
 let broadcasterList: string[] = []
+let watcher_broadcaster = {}
 
 // socket handler
 io.sockets.on('connect', socket => {
@@ -22,19 +23,28 @@ io.sockets.on('connect', socket => {
           broadcasterList.push(socket.id);
           socket.broadcast.emit('broadcaster', socket.id)
      })
-     
+
      socket.on("start-watching", (broadcasterId) => {
           socket.to(broadcasterId).emit("start-watching", socket.id);
+          watcher_broadcaster[socket.id] = broadcasterId
      });
-     socket.on("disconnect", broadcaster => {
-          socket.to(broadcaster).emit("disconnectPeer", socket.id);
+
+     socket.on("disconnect", () => {
+          let clientId = socket.id
+          let broadcasterId = watcher_broadcaster[clientId]
+
+          socket.to(broadcasterId).emit("disconnectPeer", clientId);
+          delete watcher_broadcaster[clientId]
      });
+
      socket.on("offer", (clientId, localDescription) => {
           socket.to(clientId).emit("offer", socket.id, localDescription);
      });
+
      socket.on("answer", (id, message) => {
           socket.to(id).emit("answer", socket.id, message);
      });
+
      socket.on("candidate", (clientId, message) => {
           socket.to(clientId).emit("candidate", socket.id, message);
      });
