@@ -19,7 +19,7 @@ class NavBar extends React.Component {
                               <Nav className="mr-auto">
                                    <Nav.Link href="/">Home</Nav.Link>
                                    {!this.props.isStreaming ? (
-                                        <button className="btn btn-outline-success my-2 my-sm-0" type="submit"><a style={{color:'#28a745'}} href="/broadcaster">Start Streaming</a></button>
+                                        <a href="/broadcaster" className="btn btn-outline-success" role="button" aria-disabled="true">Start streaming</a>
                                    ) : (
                                         ''
                                    )}

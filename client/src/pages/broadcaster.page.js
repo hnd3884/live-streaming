@@ -111,7 +111,7 @@ class BroadCaster extends React.Component {
         return (
             <div>
                 <NavBar user={this.state.user} history={this.props.history} isStreaming={true}/>
-                <div id='stream-screen' style={{ margin: '20px' }}>
+                <div id='stream-screen'>
                     <video id='camera' playsInline autoPlay muted></video>
                     &nbsp;
                     &nbsp;

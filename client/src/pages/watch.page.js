@@ -3,12 +3,23 @@ import './styles/home.style.css'
 import io from 'socket.io-client'
 import configs from '../config'
 import NavBar from "../components/navbar.component";
+import authService from "../services/auth.service";
 
 class Watch extends React.Component {
 
      constructor(props) {
           super(props)
-          console.log(this.props.id)
+
+          // check if user did not sign in
+          let user = authService.getCurrentUser();
+          if (!user) {
+               this.props.history.push('/login')
+               window.location.reload()
+          }
+
+          this.state = {
+               user: JSON.parse(user)
+          }
      }
 
      componentDidMount() {
@@ -69,7 +80,7 @@ class Watch extends React.Component {
           return (
                <div>
                     <NavBar user={this.state.user} history={this.props.history} isStreaming={true} />
-                    <video playsInline autoPlay muted></video>
+                    <video id='camera' playsInline autoPlay muted></video>
                </div>
           )
      }

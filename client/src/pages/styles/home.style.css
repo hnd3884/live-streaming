@@ -3,8 +3,3 @@ table {
   border: 1px solid gray;
   border-radius: 5px;
 }
-
-a:hover {
-  color: white !important;
-  text-decoration: none !important;
-}
