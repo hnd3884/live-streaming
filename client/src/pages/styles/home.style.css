@@ -1,0 +1,12 @@
+video {
+  height: 300px;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+}
+
+table {
+  text-align: center;
+  border: 1px solid gray;
+  border-radius: 5px;
+}

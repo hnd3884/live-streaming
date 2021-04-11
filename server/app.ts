@@ -31,6 +31,14 @@ io.sockets.on('connect', socket => {
 
      socket.on("disconnect", () => {
           let clientId = socket.id
+
+          // check if client is broadcaster, if true then remove broadcaster
+          let isBroadcaster = broadcasterList.includes(clientId)
+          if (isBroadcaster) {
+               broadcasterList = broadcasterList.filter(e => e != clientId)
+               return
+          }
+
           let broadcasterId = watcher_broadcaster[clientId]
 
           socket.to(broadcasterId).emit("disconnectPeer", clientId);

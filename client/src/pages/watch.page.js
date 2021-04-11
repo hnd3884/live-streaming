@@ -1,7 +1,7 @@
 import React from "react";
-import '../styles/home.style.css'
+import './styles/home.style.css'
 import io from 'socket.io-client'
-import { config } from '../config'
+import configs from '../config'
 
 class Watch extends React.Component {
 
@@ -18,14 +18,14 @@ class Watch extends React.Component {
           let peerConnection;
 
           // socket connection
-          const socket = io(`${config.NODE_IP}:${config.NODE_PORT}`);
+          const socket = io(`${configs.API_URL}`);
 
-          const video = document.querySelector("video");
+          const video = document.getElementById("camera");
 
           // socket handler
           socket.on("offer", (id, description) => {
                console.log('offer')
-               peerConnection = new RTCPeerConnection(config);
+               peerConnection = new RTCPeerConnection(configs.STUN_CONFIG);
                peerConnection
                     .setRemoteDescription(description)
                     .then(() => peerConnection.createAnswer())
@@ -67,7 +67,8 @@ class Watch extends React.Component {
      render() {
           return (
                <div>
-                    <video playsInline autoPlay muted></video>
+                    <video id='camera' playsInline autoPlay muted></video>
+                    <video id='screen' playsInline autoPlay muted></video>
                </div>
           )
      }
