@@ -1,16 +1,27 @@
 import React from "react";
 import io from 'socket.io-client'
-import './styles/home.style.css'
+import './styles/broadcaster.style.css'
 import configs from '../config'
+import authService from "../services/auth.service";
+import NavBar from "../components/navbar.component";
 
 class BroadCaster extends React.Component {
     constructor() {
         super()
+
+        // check if user did not sign in
+        let user = authService.getCurrentUser();
+        if (!user) {
+            this.props.history.push('/login')
+            window.location.reload()
+        }
+
         this.state = {
             // client list
             peerConnections: {},
             // socket connection
-            socket: io(`${configs.API_URL}`)
+            socket: io(`${configs.API_URL}`),
+            user: JSON.parse(user)
         }
     }
 
@@ -93,14 +104,13 @@ class BroadCaster extends React.Component {
 
     // Start streaming
     SwitchShare = () => {
-        
+
     }
 
     render() {
         return (
             <div>
-                User: hoangnd&nbsp;
-                <button id='control-btn' onClick={this.ShareScreen}>Share screen</button>
+                <NavBar user={this.state.user} history={this.props.history} isStreaming={true}/>
                 <div id='stream-screen' style={{ margin: '20px' }}>
                     <video id='camera' playsInline autoPlay muted></video>
                     &nbsp;

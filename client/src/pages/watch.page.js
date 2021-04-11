@@ -2,6 +2,7 @@ import React from "react";
 import './styles/home.style.css'
 import io from 'socket.io-client'
 import configs from '../config'
+import NavBar from "../components/navbar.component";
 
 class Watch extends React.Component {
 
@@ -67,8 +68,8 @@ class Watch extends React.Component {
      render() {
           return (
                <div>
-                    <video id='camera' playsInline autoPlay muted></video>
-                    <video id='screen' playsInline autoPlay muted></video>
+                    <NavBar user={this.state.user} history={this.props.history} isStreaming={true} />
+                    <video playsInline autoPlay muted></video>
                </div>
           )
      }

@@ -1,14 +1,16 @@
 import React from "react";
 import './styles/home.style.css'
 import './styles/common.style.css'
+import "bootstrap/dist/css/bootstrap.min.css";
 import authService from '../services/auth.service'
 import configs from '../config'
 import axios from 'axios'
+import NavBar from "../components/navbar.component";
 
 class Home extends React.Component {
 
-     constructor() {
-          super()
+     constructor(props) {
+          super(props)
 
           // check if user did not sign in
           let user = authService.getCurrentUser();
@@ -21,8 +23,6 @@ class Home extends React.Component {
                broadcasters: [],
                user: JSON.parse(user)
           }
-
-          console.log(user)
      }
 
      componentDidMount() {
@@ -41,6 +41,7 @@ class Home extends React.Component {
      render() {
           return (
                <div>
+                    <NavBar user={this.state.user} history={this.props.history} isStreaming={false}/>
                     <table className="table">
                          <thead className="thead-dark">
                               <tr>
