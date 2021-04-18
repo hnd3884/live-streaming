@@ -4,6 +4,7 @@ import io from 'socket.io-client'
 import configs from '../config'
 import NavBar from "../components/navbar.component";
 import authService from "../services/auth.service";
+import ChatContainer from "../components/chat.component";
 
 class Watch extends React.Component {
 
@@ -12,10 +13,6 @@ class Watch extends React.Component {
 
           // check if user did not sign in
           let user = authService.getCurrentUser();
-          if (!user) {
-               this.props.history.push('/login')
-               window.location.reload()
-          }
 
           this.state = {
                user: JSON.parse(user)
@@ -36,7 +33,6 @@ class Watch extends React.Component {
 
           // socket handler
           socket.on("offer", (id, description) => {
-               console.log('offer')
                peerConnection = new RTCPeerConnection(configs.STUN_CONFIG);
                peerConnection
                     .setRemoteDescription(description)
@@ -79,8 +75,15 @@ class Watch extends React.Component {
      render() {
           return (
                <div>
-                    <NavBar user={this.state.user} history={this.props.history} isStreaming={true} />
-                    <video id='camera' playsInline autoPlay muted></video>
+                    <NavBar user={this.state.user} history={this.props.history} isStreaming={false} />
+                    <div className='row' style={{margin:'0'}}>
+                    <div id='stream-screen' className="col-md-9" style={{textAlign:'center', backgroundColor:'black', margin:'0'}}>
+                        <video id='camera' playsInline autoPlay muted></video>
+                    </div>
+                    <div className="col-md-3" style={{margin:'0'}}>
+                        <ChatContainer />
+                    </div>
+                </div>
                </div>
           )
      }

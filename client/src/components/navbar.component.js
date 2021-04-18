@@ -35,7 +35,19 @@ class NavBar extends React.Component {
                );
           }
           else {
-
+               return (
+                    <Navbar bg="light" expand="lg">
+                         <Navbar.Collapse id="basic-navbar-nav">
+                              <Nav className="mr-auto">
+                                   <Nav.Link href="/">Home</Nav.Link>
+                                   <a href="/login" className="btn btn-outline-success" role="button" aria-disabled="true">Login to stream and interact</a>
+                              </Nav>
+                              <Nav>
+                                   <Nav.Link>You are logging as anonymous</Nav.Link>
+                              </Nav>
+                         </Navbar.Collapse>
+                    </Navbar>
+               );
           }
      }
 }

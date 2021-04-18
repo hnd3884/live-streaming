@@ -4,6 +4,7 @@ import './styles/broadcaster.style.css'
 import configs from '../config'
 import authService from "../services/auth.service";
 import NavBar from "../components/navbar.component";
+import ChatContainer from "../components/chat.component";
 
 class BroadCaster extends React.Component {
     constructor() {
@@ -26,24 +27,25 @@ class BroadCaster extends React.Component {
     }
 
     componentDidMount() {
+        const video = document.querySelector("video");
 
         // Use camera
-        const videoCamera = document.getElementById("camera");
         navigator.mediaDevices
             .getUserMedia(configs.VIDEO_CONSTRAINS)
             .then(stream => {
-                videoCamera.srcObject = stream;
-                this.state.socket.emit("broadcaster");
+                video.srcObject = stream;
+                this.state.socket.emit("broadcaster", this.state.user.name);
             })
             .catch(error => console.error(error));
 
         // Use screen
-        // const videoScreen = document.getElementById("screen");
-        // navigator.mediaDevices.getDisplayMedia(config.VIDEO_CONSTRAINS)
-        //     .then(function (mediaStream) {
-        //         videoScreen.srcObject = mediaStream;
+        // navigator.mediaDevices
+        //     .getDisplayMedia(configs.VIDEO_CONSTRAINS)
+        //     .then(stream => {
+        //         video.srcObject = stream;
+        //         this.state.socket.emit("broadcaster", this.state.user.name);
         //     })
-        //     .catch(function (err) { console.log(err.name + ": " + err.message); });
+        //     .catch(error => console.error(error));
 
         // Socket handler
         this.state.socket.on("start-watching", clientId => {
@@ -59,7 +61,7 @@ class BroadCaster extends React.Component {
                 }
             })
 
-            let streamCamera = videoCamera.srcObject;
+            let streamCamera = video.srcObject;
             streamCamera.getTracks().forEach(track => {
                 peerConnection.addTrack(track, streamCamera)
             });
@@ -110,13 +112,14 @@ class BroadCaster extends React.Component {
     render() {
         return (
             <div>
-                <NavBar user={this.state.user} history={this.props.history} isStreaming={true}/>
-                <div id='stream-screen'>
-                    <video id='camera' playsInline autoPlay muted></video>
-                    &nbsp;
-                    &nbsp;
-                    &nbsp;
-                    <video id='screen' playsInline autoPlay muted></video>
+                <NavBar user={this.state.user} history={this.props.history} isStreaming={true} />
+                <div className='row' style={{margin:'0'}}>
+                    <div id='stream-screen' className="col-md-9" style={{textAlign:'center', backgroundColor:'black', margin:'0'}}>
+                        <video id='camera' playsInline autoPlay muted></video>
+                    </div>
+                    <div className="col-md-3" style={{margin:'0'}}>
+                        <ChatContainer />
+                    </div>
                 </div>
             </div>
         )

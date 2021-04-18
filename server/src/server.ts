@@ -11,13 +11,13 @@ const io = new socketIO.Server(server, {
 })
 
 // locate socket ids of broadcasters
-let broadcasterList: string[] = []
+let broadcasterList = {}
 let watcher_broadcaster = {}
 
 // socket handler
 io.sockets.on('connect', socket => {
-     socket.on('broadcaster', () => {
-          broadcasterList.push(socket.id);
+     socket.on('broadcaster', (username) => {
+          broadcasterList[username] = socket.id
           socket.broadcast.emit('broadcaster', socket.id)
      })
 
@@ -29,10 +29,9 @@ io.sockets.on('connect', socket => {
      socket.on("disconnect", () => {
           let clientId = socket.id
 
-          // check if client is broadcaster, if true then remove broadcaster
-          let isBroadcaster = broadcasterList.includes(clientId)
-          if (isBroadcaster) {
-               broadcasterList = broadcasterList.filter(e => e != clientId)
+          let broadcasterName = Object.keys(broadcasterList).find(key => broadcasterList[key] === clientId)
+          if (broadcasterName) {
+               delete broadcasterList[broadcasterName]
                return
           }
 

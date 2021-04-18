@@ -10,7 +10,21 @@ const configs = {
                }
           ]
      },
-     API_URL: 'http://localhost:5000'
+     API_URL: 'http://localhost:5000',
+     MONTH_NAME : [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+     ]
 }
 
 export default configs

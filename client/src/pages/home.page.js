@@ -15,14 +15,18 @@ class Home extends React.Component {
           // check if user did not sign in
           let user = authService.getCurrentUser();
           if (!user) {
-               this.props.history.push('/login')
-               window.location.reload()
+               this.state = {
+                    broadcasters: {},
+                    user: null
+               }
+          }
+          else {
+               this.state = {
+                    broadcasters: {},
+                    user: JSON.parse(user)
+               }
           }
 
-          this.state = {
-               broadcasters: [],
-               user: JSON.parse(user)
-          }
      }
 
      componentDidMount() {
@@ -41,22 +45,24 @@ class Home extends React.Component {
      render() {
           return (
                <div>
-                    <NavBar user={this.state.user} history={this.props.history} isStreaming={false}/>
+                    <NavBar user={this.state.user} history={this.props.history} isStreaming={false} />
                     <table className="table">
-                         <thead className="thead-dark">
+                         <thead className="bg-success text-light">
                               <tr>
-                                   <th scope="col"><h1>Streamer online</h1></th>
+                                   <th scope="col"><h1>On Stream</h1></th>
                               </tr>
                          </thead>
                          <tbody>
-                              {this.state.broadcasters.map((bc, i) => {
-                                   let link = `/watch/${bc}`
-                                   return (
-                                        <tr key={i}>
-                                             <td><a href={link}>{bc}</a></td>
-                                        </tr>
-                                   )
-                              })}
+                              {Object.keys(this.state.broadcasters).length === 0 ? 'No streamer online' : (
+                                   Object.keys(this.state.broadcasters).map((key, i) => {
+                                        let link = `/watch/${this.state.broadcasters[key]}`
+                                        return (
+                                             <tr key={i}>
+                                                  <td><a href={link}>{key}</a></td>
+                                             </tr>
+                                        )
+                                   }
+                              ))}
                          </tbody>
                     </table>
 
