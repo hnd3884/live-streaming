@@ -22,7 +22,8 @@ class BroadCaster extends React.Component {
             peerConnections: {},
             // socket connection
             socket: io(`${configs.API_URL}`),
-            user: JSON.parse(user)
+            user: JSON.parse(user),
+            messageList: []
         }
     }
 
@@ -88,6 +89,16 @@ class BroadCaster extends React.Component {
             this.state.peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
         });
 
+        this.state.socket.on("chat", (watcherName, message) => {
+            this.setState({
+                messageList: [...this.state.messageList, {
+                    time: new Date(),
+                    message: message,
+                    user: watcherName
+                }]
+            })
+        });
+
         this.state.socket.on("disconnectPeer", id => {
             this.state.peerConnections[id].close();
             delete this.state.peerConnections[id];
@@ -99,26 +110,27 @@ class BroadCaster extends React.Component {
         };
     }
 
-    // Stop streamming
-    StopStreaming = () => {
-
-    }
-
-    // Start streaming
-    SwitchShare = () => {
-
+    CommitMessage = (message) => {
+        this.state.socket.emit("chat", message, this.state.user.name, this.state.socket.id)
+        this.setState({
+            messageList: [...this.state.messageList, {
+                time: new Date(),
+                message: message,
+                user: this.state.user.name
+            }]
+        })
     }
 
     render() {
         return (
             <div>
                 <NavBar user={this.state.user} history={this.props.history} isStreaming={true} />
-                <div className='row' style={{margin:'0'}}>
-                    <div id='stream-screen' className="col-md-9" style={{textAlign:'center', backgroundColor:'black', margin:'0'}}>
+                <div className='row' style={{ margin: '0' }}>
+                    <div id='stream-screen' className="col-md-9" style={{ textAlign: 'center', backgroundColor: 'black', margin: '0' }}>
                         <video id='camera' playsInline autoPlay muted></video>
                     </div>
-                    <div className="col-md-3" style={{margin:'0'}}>
-                        <ChatContainer />
+                    <div className="col-md-3" style={{ margin: '0', padding: '0' }}>
+                        <ChatContainer currentUser={this.state.user.name} messageList={this.state.messageList} commitMessage={this.CommitMessage} />
                     </div>
                 </div>
             </div>

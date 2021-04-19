@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <Route exact path="/" component={Home} />
       <Route exact path="/broadcaster" component={BroadCaster} />
-      <Route exact path="/watch/:id" render={({ match }) => <Watch id={match.params.id}/>} />
+      <Route exact path="/watch/:id" render={({ match }) => <Watch broadcasterId={match.params.id}/>} />
       <Route exact path="/login" component={Login} />
     </BrowserRouter>
   );

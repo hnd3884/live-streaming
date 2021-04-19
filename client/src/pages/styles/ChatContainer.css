@@ -1,4 +1,4 @@
-.container{max-width:1170px; margin:auto;}
+.container{max-width:1170px; margin:auto;padding-right: 0;}
 img{ max-width:100%;}
 .inbox_people {
   background: #f8f8f8 none repeat scroll 0 0;
@@ -60,7 +60,7 @@ img{ max-width:100%;}
 
 .active_chat{ background:#ebebeb;}
 .incoming_msg{
-  margin-bottom: 20px;
+  margin: 15px 0px 15px;
 }
 .incoming_msg_img {
   display: inline-block;
@@ -87,10 +87,10 @@ img{ max-width:100%;}
   font-size: 12px;
   margin: 8px 0 0;
 }
-.received_withd_msg { width: 80%;}
+.received_withd_msg { width: 75%;}
 .mesgs {
   float: left;
-  padding: 30px 15px 0 25px;
+  padding: 0px 15px 0 25px;
   /* width: 60%; */
   width: 100%;
 }
@@ -103,10 +103,10 @@ img{ max-width:100%;}
   padding: 5px 10px 5px 12px;
   width:100%;
 }
-.outgoing_msg{ overflow:hidden; margin:26px 0 26px;}
+.outgoing_msg{ overflow:hidden; margin:20px 0 20px;}
 .sent_msg {
   float: right;
-  width: 80%;
+  width: 75%;
 }
 .input_msg_write input {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;

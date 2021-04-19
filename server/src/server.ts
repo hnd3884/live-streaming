@@ -17,21 +17,24 @@ let watcher_broadcaster = {}
 // socket handler
 io.sockets.on('connect', socket => {
      socket.on('broadcaster', (username) => {
-          broadcasterList[username] = socket.id
-          socket.broadcast.emit('broadcaster', socket.id)
+          broadcasterList[socket.id] = username
+          socket.join(username)
      })
 
      socket.on("start-watching", (broadcasterId) => {
           socket.to(broadcasterId).emit("start-watching", socket.id);
           watcher_broadcaster[socket.id] = broadcasterId
+
+          let broadcasterName = broadcasterList[broadcasterId]
+          socket.join(broadcasterName)
      });
 
      socket.on("disconnect", () => {
           let clientId = socket.id
 
-          let broadcasterName = Object.keys(broadcasterList).find(key => broadcasterList[key] === clientId)
+          let broadcasterName = broadcasterList[clientId]
           if (broadcasterName) {
-               delete broadcasterList[broadcasterName]
+               delete broadcasterList[clientId]
                return
           }
 
@@ -43,6 +46,11 @@ io.sockets.on('connect', socket => {
 
      socket.on("offer", (clientId, localDescription) => {
           socket.to(clientId).emit("offer", socket.id, localDescription);
+     });
+
+     socket.on("chat", (message, watcherName, broadcasterId) => {
+          // send message to room
+          socket.to(broadcasterList[broadcasterId]).emit("chat", watcherName, message)
      });
 
      socket.on("answer", (id, message) => {

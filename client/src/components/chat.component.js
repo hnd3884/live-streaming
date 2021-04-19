@@ -7,8 +7,7 @@ class ChatContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.username,
-      messHistory: props.messHistory,
+      currentUser: props.currentUser,
       messageCommit: ""
     }
   }
@@ -26,11 +25,11 @@ class ChatContainer extends Component {
     this.UpdateScroll();
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.state.messHistory !== newProps.messHistory) {
-      this.setState({ messHistory: newProps.messHistory });
-    }
-  }
+  // componentWillReceiveProps(newProps) {
+  //   if (this.state.messHistory !== newProps.messHistory) {
+  //     this.setState({ messHistory: newProps.messHistory });
+  //   }
+  // }
 
   ChangeMessageCommit(event) {
     this.setState({ messageCommit: event.target.value });
@@ -57,30 +56,20 @@ class ChatContainer extends Component {
 
               {/*--- Mess history ---*/}
               <div className="msg_history" id="msghistory">
-                <Message
-                  isUser={true}
-                  message="Hi there, i'm Hoang"
-                  time="2020/01/02"
-                  key={1}
-                  username={"hoangnd"}
-                >
-                </Message>
-                <Message
-                  isUser={false}
-                  message="Hi there, i'm Hoang"
-                  time="2020/01/02"
-                  key={2}
-                  username={"hoangnd"}
-                >
-                </Message>
-                <Message
-                  isUser={false}
-                  message="Hi there, i'm Hoang"
-                  time="2020/01/02"
-                  key={3}
-                  username={"hoangnd"}
-                >
-                </Message>
+                {
+                  this.props.messageList.map((value, index) => {
+                    return (
+                      <Message
+                        isUser={value.user === this.state.currentUser ? true : false}
+                        message={value.message}
+                        time={value.time}
+                        key={index}
+                        username={value.user}
+                      >
+                      </Message>
+                    );
+                  })
+                }
               </div>
               {/*--- End mess history ---*/}
 
