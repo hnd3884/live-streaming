@@ -3,15 +3,14 @@ import configs from '../config'
 
 class AuthService {
      login = async (username: String, password: String) => {
-          const response = await axios
-               .post(configs.API_URL + "/auth/login", {
-                    username,
-                    password
-               });
+          const response = await axios.post(configs.API_URL + "/auth/login", {
+               username,
+               password
+          });
           if (response.data.token) {
                localStorage.setItem("user", JSON.stringify(response.data));
                return null
-          }else {
+          } else {
                return response.data.error
           }
      }
@@ -20,12 +19,15 @@ class AuthService {
           localStorage.removeItem("user");
      }
 
-     register = (username: String, email: String, password: String) => {
-          return axios.post(configs.API_URL + "/auth/register", {
+     register = async (username: String, email: String, password: String, name: String) => {
+          const response = await axios.post(configs.API_URL + "/user/add", {
                username,
+               name,
                email,
                password
           });
+
+          return response
      }
 
      getCurrentUser = () => {

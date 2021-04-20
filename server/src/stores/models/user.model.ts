@@ -12,9 +12,7 @@ class User {
         },
         name: String,
         gender: String,
-        age: Number,
         email: String,
-        country: String,
         role: String
     });
 

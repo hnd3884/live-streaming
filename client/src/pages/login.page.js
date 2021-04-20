@@ -80,12 +80,11 @@ class Login extends React.Component {
                               </Form.Text>
                          </Form.Group>
 
-                         <Form.Group>
-                              <Form.Check type="checkbox" label="Check me out" />
-                         </Form.Group>
                          <Button variant="primary" type="submit" onClick={this.loginButtonHandler}>
-                              Submit
-                    </Button>
+                              Login
+                         </Button>
+                         &nbsp;&nbsp;
+                         <a href='/register'>Register</a>
                     </Form>
                </div>
           );

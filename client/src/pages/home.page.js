@@ -53,7 +53,7 @@ class Home extends React.Component {
                               </tr>
                          </thead>
                          <tbody>
-                              {Object.keys(this.state.broadcasters).length === 0 ? 'No streamer online' : (
+                              {Object.keys(this.state.broadcasters).length === 0 ? <tr><td>No streamer online</td></tr> : (
                                    Object.keys(this.state.broadcasters).map((key, i) => {
                                         let link = `/watch/${key}`
                                         return (

@@ -29,8 +29,7 @@ export class UserController {
 
             // save user to db
             await this._userStore.addUser(newUser)
-            let users = await this._userStore.getUsers()
-            res.send(users).status(200).end();
+            res.send(null).status(200).end();
 
         } catch (error) {
             console.log(error)

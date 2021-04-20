@@ -21,7 +21,8 @@ class Router {
         this._app.get('/users', this._userController.getUsers)
 
         // use middleware
-        this._app.post('/user/add', middleware.verifyToken, middleware.isAdmin, this._userController.addUser)
+        // this._app.post('/user/add', middleware.verifyToken, middleware.isAdmin, this._userController.addUser)
+        this._app.post('/user/add', this._userController.addUser)
     }
 
 
