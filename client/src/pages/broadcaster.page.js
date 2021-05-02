@@ -23,7 +23,8 @@ class BroadCaster extends React.Component {
             // socket connection
             socket: io(`${configs.API_URL}`),
             user: JSON.parse(user),
-            messageList: []
+            messageList: [],
+            password: '',
         }
     }
 
@@ -35,7 +36,7 @@ class BroadCaster extends React.Component {
             .getUserMedia(configs.VIDEO_CONSTRAINS)
             .then(stream => {
                 video.srcObject = stream;
-                this.state.socket.emit("broadcaster", this.state.user.name);
+                this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
             })
             .catch(error => console.error(error));
 
@@ -81,6 +82,13 @@ class BroadCaster extends React.Component {
                 });
         });
 
+        this.state.socket.on("password", (password) => {
+            console.log(password)
+            this.setState({
+                password: password
+            })
+        });
+
         this.state.socket.on("answer", (id, description) => {
             this.state.peerConnections[id].setRemoteDescription(description);
         });
@@ -124,7 +132,7 @@ class BroadCaster extends React.Component {
     render() {
         return (
             <div>
-                <NavBar user={this.state.user} history={this.props.history} isStreaming={true} />
+                <NavBar password={this.state.password} user={this.state.user} history={this.props.history} isStreaming={true} />
                 <div className='row' style={{ margin: '0' }}>
                     <div id='stream-screen' className="col-md-9" style={{ textAlign: 'center', backgroundColor: 'black', margin: '0' }}>
                         <video id='camera' playsInline autoPlay muted></video>

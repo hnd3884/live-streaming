@@ -25,8 +25,6 @@ class Router {
         this._app.post('/user/add', this._userController.addUser)
     }
 
-
-
     AuthenticationHandler() {
         this._app.post('/auth/login', this._authController.login)
     }
