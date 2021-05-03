@@ -1,14 +1,15 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Button, Modal, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import authService from '../services/auth.service'
 
 class NavBar extends React.Component {
 
-     constructor(props){
+     constructor(props) {
           super();
           this.state = {
-               isPrivate : false
+               isPrivate: false,
+               show: false
           }
      }
 
@@ -21,7 +22,7 @@ class NavBar extends React.Component {
      handleSwitch = (event) => {
           // console.log(event.target.checked)
           this.setState({
-               isPrivate : event.target.checked
+               isPrivate: event.target.checked
           })
      }
 
@@ -42,7 +43,20 @@ class NavBar extends React.Component {
                                         </>
                                    ) : (
                                         <>
-                                             Password: {this.props.password}
+                                             <Button variant="outline-primary" onClick={() => { this.setState({ show: true }) }}>
+                                                  Password
+                                             </Button>
+                                             <Modal show={this.state.show} onHide={this.handleClose}>
+                                                  <Modal.Body>
+                                                       <div>Your room password:</div>
+                                                       {this.props.password}
+                                                  </Modal.Body>
+                                                  <Modal.Footer>
+                                                       <Button variant="secondary" onClick={() => { this.setState({ show: false }) }}>
+                                                            Close
+                                                       </Button>
+                                                  </Modal.Footer>
+                                             </Modal>
                                         </>
                                    )}
                               </Nav>

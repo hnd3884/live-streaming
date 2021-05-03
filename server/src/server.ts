@@ -88,7 +88,7 @@ io.sockets.on('connect', socket => {
 
 // API get broadcaster-list
 app.get('/broadcaster/list', (req, res) => {
-     res.send(broadcasterList).end()
+     res.send(broadcasterList.map(item => { return { 'name': item.name, 'mode': item.mode } })).end()
 })
 
 // API room

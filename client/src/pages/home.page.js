@@ -83,6 +83,7 @@ class Home extends React.Component {
                     this.setState({
                          broadcasters: res.data
                     })
+                    console.log(res.data)
                })
      }
 

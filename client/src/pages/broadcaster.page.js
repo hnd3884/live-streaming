@@ -45,7 +45,7 @@ class BroadCaster extends React.Component {
         //     .getDisplayMedia(configs.VIDEO_CONSTRAINS)
         //     .then(stream => {
         //         video.srcObject = stream;
-        //         this.state.socket.emit("broadcaster", this.state.user.name);
+        //         this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
         //     })
         //     .catch(error => console.error(error));
 
