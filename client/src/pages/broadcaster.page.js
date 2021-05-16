@@ -32,22 +32,22 @@ class BroadCaster extends React.Component {
         const video = document.querySelector("video");
 
         // Use camera
-        navigator.mediaDevices
-            .getUserMedia(configs.VIDEO_CONSTRAINS)
-            .then(stream => {
-                video.srcObject = stream;
-                this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
-            })
-            .catch(error => console.error(error));
-
-        // Use screen
         // navigator.mediaDevices
-        //     .getDisplayMedia(configs.VIDEO_CONSTRAINS)
+        //     .getUserMedia(configs.VIDEO_CONSTRAINS)
         //     .then(stream => {
         //         video.srcObject = stream;
         //         this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
         //     })
         //     .catch(error => console.error(error));
+
+        // Use screen
+        navigator.mediaDevices
+            .getDisplayMedia(configs.VIDEO_CONSTRAINS)
+            .then(stream => {
+                video.srcObject = stream;
+                this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
+            })
+            .catch(error => console.error(error));
 
         // Socket handler
         this.state.socket.on("start-watching", clientId => {

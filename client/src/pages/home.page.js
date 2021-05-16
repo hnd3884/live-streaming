@@ -20,7 +20,8 @@ class Home extends React.Component {
                     broadcasters: {},
                     user: null,
                     isPrivate: false,
-                    show: false
+                    show: false,
+                    userPrivate: ''
                }
           }
           else {
@@ -28,7 +29,8 @@ class Home extends React.Component {
                     broadcasters: {},
                     user: JSON.parse(user),
                     isPrivate: false,
-                    show: false
+                    show: false,
+                    userPrivate: ''
                }
           }
      }
@@ -42,7 +44,7 @@ class Home extends React.Component {
      handleSubmit = () => {
           let password = document.getElementById('password').value
           axios.post(`${configs.API_URL}/room/`, {
-               user: this.state.user.name,
+               user: this.state.userPrivate,
                password: password
           })
                .then(res => {
@@ -55,10 +57,10 @@ class Home extends React.Component {
                })
      }
 
-     handleShow = (mode) => {
+     handleShow = (mode, username) => {
           if (mode === 'public') {
                axios.post(`${configs.API_URL}/room/`, {
-                    user: this.state.user.name,
+                    user: username,
                     password: null
                })
                     .then(res => {
@@ -68,7 +70,8 @@ class Home extends React.Component {
           }
           else {
                this.setState({
-                    show: true
+                    show: true,
+                    userPrivate: username
                })
           }
      }
@@ -105,7 +108,7 @@ class Home extends React.Component {
                                         if (this.state.broadcasters[key].mode === 'private') {
                                              return (
                                                   <tr key={i}><td>
-                                                       <Button variant="link" onClick={() => { this.handleShow('private') }}>
+                                                       <Button variant="link" onClick={() => { this.handleShow('private', this.state.broadcasters[key].name) }}>
                                                             {this.state.broadcasters[key].name}
                                                        &nbsp;
                                                        <span className="badge badge-danger">private</span>
@@ -118,7 +121,7 @@ class Home extends React.Component {
                                         else {
                                              return (
                                                   <tr key={i}><td>
-                                                       <Button variant="link" onClick={() => { this.handleShow('public') }}>
+                                                       <Button variant="link" onClick={() => { this.handleShow('public', this.state.broadcasters[key].name) }}>
                                                             {this.state.broadcasters[key].name}
                                                        &nbsp;
                                                        <span className="badge badge-success">public</span>
