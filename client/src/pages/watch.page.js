@@ -61,7 +61,6 @@ class Watch extends React.Component {
           });
 
           this.state.socket.on("chat", (watcherName, message) => {
-               console.log(watcherName + ": " + message)
                this.setState({
                     messageList: [...this.state.messageList, {
                          time: new Date(),

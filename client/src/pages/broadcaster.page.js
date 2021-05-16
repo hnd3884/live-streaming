@@ -25,29 +25,28 @@ class BroadCaster extends React.Component {
             user: JSON.parse(user),
             messageList: [],
             password: '',
+            shareMode: 0 // 0 => camera, 1 => screen
         }
     }
 
     componentDidMount() {
-        const video = document.querySelector("video");
-
         // Use camera
-        // navigator.mediaDevices
-        //     .getUserMedia(configs.VIDEO_CONSTRAINS)
-        //     .then(stream => {
-        //         video.srcObject = stream;
-        //         this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
-        //     })
-        //     .catch(error => console.error(error));
-
-        // Use screen
         navigator.mediaDevices
-            .getDisplayMedia(configs.VIDEO_CONSTRAINS)
+            .getUserMedia(configs.VIDEO_CONSTRAINS)
             .then(stream => {
-                video.srcObject = stream;
+                document.querySelector("video").srcObject = stream;
                 this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
             })
             .catch(error => console.error(error));
+
+        // Use screen
+        // navigator.mediaDevices
+        //     .getDisplayMedia(configs.VIDEO_CONSTRAINS)
+        //     .then(stream => {
+        //         document.querySelector("video").srcObject = stream;
+        //         this.state.socket.emit("broadcaster", this.state.user.name, this.props.mode);
+        //     })
+        //     .catch(error => console.error(error));
 
         // Socket handler
         this.state.socket.on("start-watching", clientId => {
@@ -63,9 +62,9 @@ class BroadCaster extends React.Component {
                 }
             })
 
-            let streamCamera = video.srcObject;
-            streamCamera.getTracks().forEach(track => {
-                peerConnection.addTrack(track, streamCamera)
+            let stream = document.querySelector("video").srcObject;
+            stream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, stream)
             });
 
             peerConnection.onicecandidate = event => {
@@ -110,7 +109,6 @@ class BroadCaster extends React.Component {
         this.state.socket.on("disconnectPeer", id => {
             this.state.peerConnections[id].close();
             delete this.state.peerConnections[id];
-            console.log(this.state.peerConnections)
         });
 
         window.onunload = window.onbeforeunload = () => {
@@ -129,10 +127,60 @@ class BroadCaster extends React.Component {
         })
     }
 
+    SwitchShare = () => {
+        if (this.state.shareMode === 0) { // using camera
+            // change camera to screen
+            navigator.mediaDevices
+                .getDisplayMedia(configs.VIDEO_CONSTRAINS)
+                .then(stream => {
+                    document.querySelector("video").srcObject = stream;
+                    for (const [, peer] of Object.entries(this.state.peerConnections)) {
+                        peer.getSenders().forEach(rtpSender => {
+                            if (rtpSender.track.kind === 'video') {
+                                rtpSender.replaceTrack(stream.getTracks()[0]).then(function () {
+                                    console.log("Replaced video track from camera to screen");
+                                }).catch(function (error) {
+                                    console.log("Could not replace video track: " + error);
+                                });
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+        else {
+
+            // change screen to camera
+            navigator.mediaDevices
+                .getUserMedia(configs.VIDEO_CONSTRAINS)
+                .then(stream => {
+                    document.querySelector("video").srcObject = stream;
+                    for (const [, peer] of Object.entries(this.state.peerConnections)) {
+                        peer.getSenders().forEach(rtpSender => {
+                            if (rtpSender.track.kind === 'video') {
+                                console.log(234234234);
+                                rtpSender.replaceTrack(stream.getVideoTracks()[0]).then(function () {
+                                    console.log("Replaced video track from screen to camera");
+                                }).catch(function (error) {
+                                    console.log("Could not replace video track: " + error);
+                                });
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+
+        this.setState({
+            shareMode: 1 - this.state.shareMode
+        })
+    }
+
     render() {
         return (
             <div>
                 <NavBar password={this.state.password} user={this.state.user} history={this.props.history} isStreaming={true} />
+                <button type='button' onClick={this.SwitchShare}>Switch share</button>
                 <div className='row' style={{ margin: '0' }}>
                     <div id='stream-screen' className="col-md-9" style={{ textAlign: 'center', backgroundColor: 'black', margin: '0' }}>
                         <video id='camera' playsInline autoPlay muted></video>
