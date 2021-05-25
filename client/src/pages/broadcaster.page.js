@@ -5,6 +5,11 @@ import configs from '../config'
 import authService from "../services/auth.service";
 import NavBar from "../components/navbar.component";
 import ChatContainer from "../components/chat.component";
+import '../../node_modules/font-awesome/css/font-awesome.min.css';
+import { Dropdown } from "react-bootstrap";
+import DropdownToggle from "react-bootstrap/esm/DropdownToggle";
+import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
+import DropdownItem from "react-bootstrap/esm/DropdownItem";
 
 class BroadCaster extends React.Component {
     constructor() {
@@ -30,6 +35,8 @@ class BroadCaster extends React.Component {
     }
 
     componentDidMount() {
+        document.getElementById('dropdown_switch').classList.remove('dropdown-toggle');
+
         // Use camera
         navigator.mediaDevices
             .getUserMedia(configs.VIDEO_CONSTRAINS)
@@ -127,8 +134,8 @@ class BroadCaster extends React.Component {
         })
     }
 
-    SwitchShare = () => {
-        if (this.state.shareMode === 0) { // using camera
+    SwitchShare = (mode) => {
+        if (mode === 1 && this.state.shareMode === 0) { // using camera
             // change camera to screen
             navigator.mediaDevices
                 .getDisplayMedia(configs.VIDEO_CONSTRAINS)
@@ -147,9 +154,12 @@ class BroadCaster extends React.Component {
                     }
                 })
                 .catch(error => console.error(error));
-        }
-        else {
 
+            this.setState({
+                shareMode: 1 - this.state.shareMode
+            })
+        }
+        else if (mode === 0 && this.state.shareMode === 1) {
             // change screen to camera
             navigator.mediaDevices
                 .getUserMedia(configs.VIDEO_CONSTRAINS)
@@ -169,20 +179,29 @@ class BroadCaster extends React.Component {
                     }
                 })
                 .catch(error => console.error(error));
-        }
 
-        this.setState({
-            shareMode: 1 - this.state.shareMode
-        })
+            this.setState({
+                shareMode: 1 - this.state.shareMode
+            })
+        }
     }
 
     render() {
         return (
             <div>
                 <NavBar password={this.state.password} user={this.state.user} history={this.props.history} isStreaming={true} />
-                <button type='button' onClick={this.SwitchShare}>Switch share</button>
+
                 <div className='row' style={{ margin: '0' }}>
                     <div id='stream-screen' className="col-md-9" style={{ textAlign: 'center', backgroundColor: 'black', margin: '0' }}>
+                        <Dropdown>
+                            <DropdownToggle id='dropdown_switch'>
+                                <i className="fa fa-cog" aria-hidden="true"></i>
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem onClick={() => this.SwitchShare(0)}>Camera</DropdownItem>
+                                <DropdownItem onClick={() => this.SwitchShare(1)}>Screen</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
                         <video id='camera' playsInline autoPlay muted></video>
                     </div>
                     <div className="col-md-3" style={{ margin: '0', padding: '0' }}>
